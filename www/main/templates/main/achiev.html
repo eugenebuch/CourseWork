@@ -1,0 +1,94 @@
+{% extends 'main/index.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+<div style="width: 50%; float: left;"><h2 class="text-left">ДОСТИЖЕНИЯ СТУДЕНТОВ</h2></div>
+{% if user_group == "Студент" %}
+<div style="width: 50%; float: left; text-align: right;"><a href="#win1"><button class="btn btn-outline-info">+ Добавить достижение</button></a></div>
+{% else %}
+<div style="width: 50%; float: left; text-align: right;"><a title="Эта функция только для студентов!"><button class="btn disabled">Добавить достижение</button></a></div>
+{% endif %}
+{% if messages %}
+	{% for mess in messages %}
+		{% if mess.tags == "success" %}
+        <div class="alert alert-success" style="width:100%; float:left;">
+          {{ mess }}
+        </div>
+        {% else %}
+        <div class="alert alert-danger" style="width:100%; float:left;">
+          {{ mess }}
+        </div>
+        {% endif %}
+	{% endfor %}
+{% endif %}
+<a href="#x" class="overlay" id="win1"></a>
+<div class="popup">
+	<h3>Добавление достижения</h3><hr>
+	<form action="#" method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<div style="width: 100%;">
+				<a href="#close"><input type="submit" value="Создать" name="save" class="btn btn-outline-dark mt-2" style="float: right;"></a>
+			</div>
+		</form>
+<a class="close"title="Закрыть" href="#close"></a>
+</div>
+<form action="#" method="POST">
+	{% csrf_token %}
+	<div class="content h-100 mt-5">
+		{% for achieve in achieves %}
+			{% if achieve.flag == 0 %}
+			<div class="w-100 p-3 mt-3" style="float: left; background-color: #D6EAF8; border: 2px solid #85C1E9; border-radius: 8px;">
+				<span style="float: left; width: 80%;"><h4 style="color: #85C1E9;">{{ achieve.title }}</h4></span><span class="text-right" style="float: left; width: 20%; color: grey;">{{ achieve.date }}</span><br><br>
+				{% if user_group == "Студент" %}
+				<span class="w-100" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+				{% else %}
+				<span class="w-50" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+				{% if user_group == "Преподаватель" %}
+					<span class="w-50 text-right" style="float: left;"><a title="Одобрить достижение"><button name="agree" value={{achieve.id}} class="bth btn-outline-success rounded mr-2" style="width: 35px;">✓</button></a><a title="Отправить на удаление"><button name="disagree" value={{achieve.id}} class="bth btn-outline-danger rounded" style="width: 35px; font-weight: bold;">✕</button></a></span>
+				{% else %}
+					<span class="w-50 text-right" style="float: left;"><a title="Удалить"><button name="delete" value={{achieve.id}} class="bth btn-outline-danger rounded" style="width: 35px; font-weight: bold;">✕</button></a></span>
+				{% endif %}
+				{% endif %}
+				<span class="w-100 mt-3 text-right font-weight-bold" style="float: left; color: #85C1E9;">Ожидает подтверждения...</span>
+				<details><summary style="height: 25px; float: left;"><i class="text-info">Подробнее...</i></summary>
+					<span class="w-100 p-3" id="more" style="float: left; border: 1px solid #85C1E9; border-radius: 8px;">{{ achieve.description }}</span>
+				</details>
+			</div>
+			{% endif %}
+			{% if achieve.flag == 1 %}
+			<div class="w-100 p-3 mt-3" style="float: left; background-color: #ABEBC6; border: 2px solid #2ECC71; border-radius: 8px;">
+				<span style="float: left; width: 80%;"><h4 style="color: #2ECC71;">{{ achieve.title }}</h4></span><span class="text-right" style="float: left; width: 20%; color: grey;">{{ achieve.date }}</span><br><br>
+				{% if user_group == "Модератор" %}
+					<span class="w-50" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+					<span class="w-50 text-right" style="float: left;"><a title="Удалить"><button name="delete" value={{achieve.id}} class="bth btn-outline-danger rounded" style="width: 35px; font-weight: bold;">✕</button></a></span>
+				{% else %}
+					<span class="w-100" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+				{% endif %}
+				<span class="w-50" style="float: left;"><b>Утвердил: </b>{{ achieve.checker }}</span><span class="w-50 mt-3 text-right font-weight-bold" style="float: left; color: #2ECC71;">Подтверждено!</span>
+				<details><summary style="height: 25px; float: left;"><i class="text-info">Подробнее...</i></summary>
+					<span class="w-100 p-3" id="more" style="float: left; border: 1px solid #2ECC71; border-radius: 8px;">{{ achieve.description }}</span>
+				</details>
+			</div>
+			{% endif %}
+			{% if achieve.flag == 2 %}
+			<div class="w-100 p-3 mt-3" style="float: left; background-color: #F5B7B1; border: 2px solid #E74C3C; border-radius: 8px;">
+				<span style="float: left; width: 80%;"><h4 style="color: #E74C3C;">{{ achieve.title }}</h4></span><span class="text-right" style="float: left; width: 20%; color: grey;">{{ achieve.date }}</span><br><br>
+				{% if user_group == "Модератор" %}
+					<span class="w-50" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+					<span class="w-50 text-right" style="float: left;"><a title="Удалить"><button name="delete" value={{achieve.id}} class="bth btn-outline-danger rounded" style="width: 35px; font-weight: bold;">✕</button></a></span>
+				{% else %}
+					<span class="w-100" style="float: left;"><b>Опубликовал: </b>{{ achieve.author }}</span>
+				{% endif %}
+				<span class="w-50" style="float: left;"><b>Отклонил: </b>{{ achieve.checker }}</span><span class="w-50 mt-3 text-right font-weight-bold" style="float: left; color: #E74C3C;">Отклонено!</span>
+				<details><summary style="height: 25px; float: left;"><i class="text-info">Подробнее...</i></summary>
+					<span class="w-100 p-3" id="more" style="float: left; border: 1px solid #E74C3C; border-radius: 8px;">{{ achieve.description }}</span>
+				</details>
+			</div>
+			{% endif %}
+		{% endfor %}
+		{% if achieves.0 == None %}
+		<div class="w-100 p-3 mt-3 text-center text-disabled" style="float: left; font-style: italic;">Пока еще ни один студент не опубликовал свое достижение :(</div>
+		{% endif %}
+	</div>
+</form>
+{% endblock %}

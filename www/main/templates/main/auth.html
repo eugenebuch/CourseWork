@@ -1,0 +1,23 @@
+{% extends 'main/index.html' %}
+{% load crispy_forms_tags %}
+{% block auth %}
+
+	<div style="width: 32%; height: 100%;" class=""></div>
+	<div class="container col-4 border rounded p-4 px-5 my-5 ml-5 shadow-sm vcenter" style="align-content: center;">
+		<h1 class="text-center">АВТОРИЗАЦИЯ</h1><hr>
+		{% if messages %}
+          {% for mess in messages %}
+            <div class="alert alert-danger">
+              {{ mess }}
+            </div>
+          {% endfor %}
+        {% endif %}
+		<form action="" method="POST">
+			{% csrf_token %}
+			{{ form|crispy }}
+			<div style="width: 100%;">
+	  			<input type="submit" value="Войти" class="btn btn-outline-dark mt-2" style="float: right;">
+	  		</div>
+		</form>
+	</div>
+{% endblock %}

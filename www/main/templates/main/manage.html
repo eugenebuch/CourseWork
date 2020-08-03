@@ -1,0 +1,69 @@
+{% extends 'main/index.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+
+<div style="width: 50%; float: left;"><h2 class="text-left">ПАНЕЛЬ МОДЕРАТОРА</h2></div>
+<div style="width: 50%; float: left; text-align: right;"><a href="#win1"><button class="btn btn-outline-info">+ Добавить пользователя</button></a></div>
+<a href="#x" class="overlay" id="win1"></a>
+<div class="popup">
+	<h3>Создание пользователя</h3><hr>
+	{% if messages %}
+		{% for mess in messages %}
+			{% if mess.tags == "success" %}
+	        <div class="alert alert-success" style="width:100%; float:left;">
+	          {{ mess }}
+	        </div>
+	        {% else %}
+	        <div class="alert alert-danger" style="width:100%; float:left;">
+	          {{ mess }}
+	        </div>
+	        {% endif %}
+		{% endfor %}
+	{% endif %}
+	<form action="" method="POST">
+		{% csrf_token %}
+		{{ form|crispy }}
+		<div style="width: 100%;">
+				<a href="#close"><input type="submit" value="Создать" name="save" class="btn btn-outline-dark mt-2" style="float: right;"></a>
+			</div>
+		</form>
+<a class="close"title="Закрыть" href="#close"></a>
+</div>
+<form action="" method="POST">
+	{% csrf_token %}
+	<table class="users">
+		<tr><th>id</th><th>Никнейм</th><th>Действия<a href="#" title="Действующий статус пользователя выделен сразу" style="cursor: help;">[?]</a></th></tr>
+		{% for user in users %}
+			<tr><td>{{ user.id }}</td><td>{{ user.username }}</td>
+			<td>
+				{% if user.group == "Студент" or user.group == "Заблокирован" %}
+					<button class="btn bg-dark btn-outline-light mr-2 mb-1 disabled" type="submit" name="give_student" value={{user.username}} disabled>Студент</button>
+				{% else %}
+					<button class="btn btn-outline-dark mr-2 mb-1" type="submit" name="give_student" value={{user.username}}>Студент</button>
+				{% endif %}
+				{% if user.group == "Преподаватель" or user.group == "Заблокирован" %}
+					<button class="btn bg-dark btn-outline-light mr-2 mb-1 disabled" type="submit" name="give_teacher" value={{user.username}} disabled>Преподаватель</button>
+				{% else %}
+					<button class="btn btn-outline-dark mr-2 mb-1" type="submit" name="give_teacher" value={{user.username}}>Преподаватель</button>
+				{% endif %}
+				{% if user.group == "Модератор" or user.group == "Заблокирован" %}
+					<button class="btn bg-dark btn-outline-light mr-2 mb-1 disabled" type="submit" name="give_moderator" value={{user.username}} disabled>Модератор</button>
+					{% if user.group == "Заблокирован" %}
+						<button class="btn btn-outline-danger mb-1" type="submit" name="delete" value={{user.username}}>X</button>
+					{% else %}
+						<button class="btn btn-outline-danger mb-1 invisible" type="submit" name="delete" value={{user.username}}>X</button>
+					{% endif %}
+				{% else %}
+					<button class="btn btn-outline-dark mr-2 mb-1" type="submit" name="give_moderator" value={{user.username}}>Модератор</button>
+					<button class="btn btn-outline-danger mb-1 " type="submit" name="delete" value={{user.username}}>X</button>
+				{% endif %}
+				{% if user.group == "Заблокирован" %}
+					<button class="btn ml-1 locker" name="unlock" value={{user.username}} style="font-size: 24px; outline: none; background: none;">🔒</button>
+				{% else %}
+					<button class="btn ml-1 locker" name="lock" value={{user.username}} style="font-size: 24px; outline: none;  background: none;">🔓</button>
+				{% endif %}
+			</td></tr>
+		{% endfor %}
+	</table>
+</form>
+{% endblock %}

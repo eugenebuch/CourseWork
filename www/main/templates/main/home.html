@@ -1,0 +1,13 @@
+{% extends 'main/index.html' %}
+{% block main %}
+	<table class="p-4 cafedras table-hover table-striped" >
+		<legend><h2>КАФЕДРЫ</h2></legend>
+		<tr><th>Название</th><th>Дата осн.</th><th>Университет</th><th>Местоположение</th><th>Краткое описание</th><th>Руководитель</th></tr>
+		{% for cafedra in cafedras %}
+		<tr><td>{{ cafedra.name }}</td><td>{{ cafedra.date }}</td><td>{{ cafedra.university }}</td><td>{{ cafedra.place }}</td><td>{{ cafedra.description }}</td>
+			<td> 
+				{{ cafedra.glav.lastname }} {{ cafedra.glav.firstname }} {{ cafedra.glav.middlename }}
+			</td></tr>
+		{% endfor %}
+	</table>
+{% endblock %}
